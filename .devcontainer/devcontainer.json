@@ -1,0 +1,22 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.205.2/containers/debian
+{
+  "name": "Pytorch",
+  "build": {
+    "dockerfile": "Dockerfile",
+  },
+  "runArgs": [
+    "--gpus=all",
+    // "--ipc=host",
+    "--shm-size=1g",
+    "--ulimit",
+    "memlock=-1",
+    "--ulimit",
+    "stack=67108864"
+  ],
+  "settings": {},
+  "extensions": [
+    "ms-python.python"
+  ],
+  "remoteUser": "pytorch"
+}
