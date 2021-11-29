@@ -8,6 +8,8 @@ import torchvision
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
 from torch.utils.tensorboard import SummaryWriter
+import torch.onnx
+import onnx
 
 
 class Net(nn.Module):
@@ -126,10 +128,7 @@ def main():
     writer = SummaryWriter()
     images, labels = next(iter(train_loader))
 
-    #5x5で画像を並べます
     img_grid = torchvision.utils.make_grid(images[:25], nrow=5)
-
-    #'logs/image' にimg_gridデータを'mnist_images'というタグ名で保存する
     writer.add_image('mnist_images', img_grid)
 
     model = Net().to(device)
@@ -141,9 +140,29 @@ def main():
         test(model, device, test_loader)
         scheduler.step()
 
+    writer.close()
     if args.save_model:
         torch.save(model.state_dict(), "mnist_cnn.pt")
-    writer.close()
+        # set the model to inference mode
+        model.eval()
+        # Input to the model (dynamic_batch_size(1) x 1 x 28 x 28)
+        x = torch.randn(1, 1, 28, 28, requires_grad=True)
+        x = x.to(device)
+        torch_out = model(x)
+        # Export the model
+        torch.onnx.export(model,
+                          x,
+                          "mnist_cnn.onnx",
+                          export_params=True,
+                          opset_version=13,
+                          do_constant_folding=True,
+                          input_names = ['input'],
+                          output_names = ['output'],
+                          dynamic_axes={'input' : {0 : 'batch_size'},    # variable length axes
+                                        'output' : {0 : 'batch_size'}})
+        # check onnx
+        onnx_model = onnx.load("mnist_cnn.onnx")
+        onnx.checker.check_model(onnx_model)
 
 
 if __name__ == '__main__':
