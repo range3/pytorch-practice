@@ -43,13 +43,20 @@ class Novel:
         for episode_path in self._episode_paths:
             yield Episode(episode_path)
 
-class DataLoader:
+class Dataset:
     def __init__(self, base_dir):
         self._novel_paths = NovelPaths(base_dir)
-
+    
     def __iter__(self):
         for novel_path in self._novel_paths:
-            novel = Novel(novel_path)
+            yield Novel(novel_path)
+
+class DataLoader:
+    def __init__(self, dataset):
+        self._dataset = dataset
+
+    def __iter__(self):
+        for novel in self._dataset:
             for episode in novel:
                 for line in episode:
                     yield line
