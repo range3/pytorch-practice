@@ -42,6 +42,14 @@ class Novel:
     def __iter__(self):
         for episode_path in self._episode_paths:
             yield Episode(episode_path)
+    
+    @property
+    def ncode(self):
+        pass
+    
+    @ncode.getter
+    def ncode(self):
+        return self._novel_path.name
 
 class Dataset:
     def __init__(self, base_dir):
