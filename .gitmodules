@@ -1,0 +1,4 @@
+[submodule "extern/mecab-ipadic-neologd"]
+	path = extern/mecab-ipadic-neologd
+	url = https://github.com/neologd/mecab-ipadic-neologd.git
+	shallow = true
