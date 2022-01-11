@@ -1,5 +1,6 @@
 {
   "python.analysis.extraPaths": [
-    "${workspaceFolder}/data_loader"
+    "${workspaceFolder}/data_loader",
+    "${workspaceFolder}/textgen",
   ]
 }

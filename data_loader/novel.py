@@ -31,8 +31,7 @@ class Episode:
 
     def __iter__(self):
         with self._episode_path.open() as f:
-            for line in f:
-                yield line
+            yield f.read()
 
 class Novel:
     def __init__(self, novel_path):
